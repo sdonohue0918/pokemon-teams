@@ -1,6 +1,11 @@
 require 'faker'
 
 class PokemonsController < ApplicationController
+
+  def index
+    pokemons = Pokemon.all
+    render json: pokemons
+  end
   def create
     unless pokemon_params[:trainer_id].nil?
       default = {}
@@ -14,8 +19,8 @@ class PokemonsController < ApplicationController
           default[:species] = Faker::Games::Pokemon.name
         end
 
-        @pokemon = Pokemon.create(pokemon_params.merge(default))
-        render json: @pokemon, status: 201
+        pokemon = Pokemon.create(pokemon_params.merge(default))
+        render json: pokemon, status: 201
       else
         render json: { error: "Party is Full!"}, status: 403
       end
@@ -25,10 +30,10 @@ class PokemonsController < ApplicationController
   end
 
   def destroy
-    @pokemon = Pokemon.find(params[:id])
-    unless @pokemon.nil?
-      @pokemon.destroy
-      render json: @pokemon
+    pokemon = Pokemon.find(params[:id])
+    unless pokemon.nil?
+      pokemon.destroy
+      render json: pokemon
     else
       render json: { error: "Pokemon not Found!" }, status: 404
     end
